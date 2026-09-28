@@ -263,7 +263,7 @@ int main()
     {
         cout << "Enter a string (or 'END' to quit): ";
 
-        getline(cin, input);
+        if (!getline(cin, input)) break;
 
         if (input == "END")
         {

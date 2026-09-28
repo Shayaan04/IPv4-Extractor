@@ -1,0 +1,16 @@
+# Compiled binaries
+*.exe
+*.o
+*.obj
+*.out
+
+# Build output
+build/
+
+# VS Code settings (contain local machine paths)
+.vscode/
+
+# OS files
+Thumbs.db
+.DS_Store
+desktop.ini
