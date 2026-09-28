@@ -263,7 +263,11 @@ int main()
     {
         cout << "Enter a string (or 'END' to quit): ";
 
-        if (!getline(cin, input)) break;
+        if (!getline(cin, input))
+        {
+            cout << "Program terminated." << endl;
+            break;
+        }
 
         if (input == "END")
         {
