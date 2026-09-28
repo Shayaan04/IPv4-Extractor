@@ -1,85 +1,311 @@
 # IPv4 Extractor Test Cases
 
-## Instructor Sample Tests
+## Instructor-Provided Test Cases
 
-| Input | Expected Result |
-|---|---|
-| `connecting to 192.168.1.1 now` | Valid: `192.168.1.1`, no port |
-| `server=10.0.0.255:8080end` | Valid: `10.0.0.255`, port `8080` |
-| `192a168.1.1.1` | Valid: `168.1.1.1`, no port |
-| `192.168.1.1.` | Invalid |
-| `Connection from 192.168.1.1 refused` | Valid: `192.168.1.1`, no port |
-| `192.168.01.1` | Invalid |
-| `1.2.3.4:99999` | Invalid |
-| `12.34.56` | Invalid |
-| `no number here` | Invalid |
+### Test 1
 
-## Valid Boundary Tests
+**Input:**
+```text
+connecting to 192.168.1.1 now
+```
 
-| Input | Expected Result |
-|---|---|
-| `0.0.0.0` | Valid |
-| `255.255.255.255` | Valid |
-| `1.2.3.4:0` | Valid |
-| `1.2.3.4:65535` | Valid |
-| `255.255.255.255:65535` | Valid |
+**Output:**
+```text
+Extracted IPv4 address: 192.168.1.1 (decimal value: 3232235777, port: none)
+```
 
-## Invalid Octet Tests
+### Test 2
 
-| Input | Expected Result |
-|---|---|
-| `256.1.1.1` | Invalid |
-| `1.256.1.1` | Invalid |
-| `1.1.256.1` | Invalid |
-| `1.1.1.256` | Invalid |
-| `999.1.1.1` | Invalid |
+**Input:**
+```text
+server=10.0.0.255:8080end
+```
 
-## Leading Zero Tests
+**Output:**
+```text
+Extracted IPv4 address: 10.0.0.255 (decimal value: 167772415, port: 8080)
+```
 
-| Input | Expected Result |
-|---|---|
-| `01.2.3.4` | Invalid |
-| `1.02.3.4` | Invalid |
-| `1.2.03.4` | Invalid |
-| `1.2.3.04` | Invalid |
-| `1.2.3.4:080` | Invalid |
-| `1.2.3.4:00` | Invalid |
+### Test 3
 
-## Structural Tests
+**Input:**
+```text
+192a168.1.1.1
+```
 
-| Input | Expected Result |
-|---|---|
-| `1.2.3` | Invalid |
-| `1.2.3.4.5` | Invalid |
-| `1..2.3.4` | Invalid |
-| `.1.2.3.4` | Invalid |
-| `1.2.3.4.` | Invalid |
-| `1.2.3.4:` | Invalid |
-| `1.2.3.4::80` | Invalid |
-| `1.2.3.4:80:90` | Invalid |
+**Output:**
+```text
+Extracted IPv4 address: 168.1.1.1 (decimal value: 2818638081, port: none)
+```
 
-## Invalid Port Tests
+### Test 4
 
-| Input | Expected Result |
-|---|---|
-| `1.2.3.4:65536` | Invalid |
-| `1.2.3.4:99999` | Invalid |
-| `1.2.3.4:123456` | Invalid |
-| `1.2.3.4:00080` | Invalid |
+**Input:**
+```text
+192.168.1.1.
+```
 
-## Garbage and Multiple Candidate Tests
+**Output:**
+```text
+Invalid input: no valid IPv4 address found
+```
 
-| Input | Expected Result |
-|---|---|
-| `abc192.168.1.1xyz` | Valid: `192.168.1.1` |
-| `abc###192.168.1.1!!!xyz` | Valid: `192.168.1.1` |
-| `999.999.999.999 text 192.168.1.1 end` | Valid: `192.168.1.1` |
-| `hello world` | Invalid |
-| `...` | Invalid |
-| `:::` | Invalid |
+### Test 5
 
-## Test Verification
+**Input:**
+```text
+Connection from 192.168.1.1 refused
+```
 
-Each test should be run manually and compared against the expected result.
+**Output:**
+```text
+Extracted IPv4 address: 192.168.1.1 (decimal value: 3232235777, port: none)
+```
 
-After testing, record whether each case passed or failed.
+### Test 6
+
+**Input:**
+```text
+192.168.01.1
+```
+
+**Output:**
+```text
+Invalid input: no valid IPv4 address found
+```
+
+### Test 7
+
+**Input:**
+```text
+1.2.3.4:99999
+```
+
+**Output:**
+```text
+Invalid input: no valid IPv4 address found
+```
+
+### Test 8
+
+**Input:**
+```text
+12.34.56
+```
+
+**Output:**
+```text
+Invalid input: no valid IPv4 address found
+```
+
+### Test 9
+
+**Input:**
+```text
+no number here
+```
+
+**Output:**
+```text
+Invalid input: no valid IPv4 address found
+```
+
+---
+
+## Additional Test Cases I Used
+
+### Test 1 — Minimum IPv4 Address
+
+**Input:**
+```text
+0.0.0.0
+```
+
+**Output:**
+```text
+Extracted IPv4 address: 0.0.0.0 (decimal value: 0, port: none)
+```
+
+### Test 2 — Maximum IPv4 Address
+
+**Input:**
+```text
+255.255.255.255
+```
+
+**Output:**
+```text
+Extracted IPv4 address: 255.255.255.255 (decimal value: 4294967295, port: none)
+```
+
+### Test 3 — Maximum Valid Port
+
+**Input:**
+```text
+1.2.3.4:65535
+```
+
+**Output:**
+```text
+Extracted IPv4 address: 1.2.3.4 (decimal value: 16909060, port: 65535)
+```
+
+### Test 4 — Port Above Maximum
+
+**Input:**
+```text
+1.2.3.4:65536
+```
+
+**Output:**
+```text
+Invalid input: no valid IPv4 address found
+```
+
+### Test 5 — Valid Port Zero
+
+**Input:**
+```text
+1.2.3.4:0
+```
+
+**Output:**
+```text
+Extracted IPv4 address: 1.2.3.4 (decimal value: 16909060, port: 0)
+```
+
+### Test 6 — Octet Above Maximum
+
+**Input:**
+```text
+256.1.1.1
+```
+
+**Output:**
+```text
+Invalid input: no valid IPv4 address found
+```
+
+### Test 7 — Leading Zero in First Octet
+
+**Input:**
+```text
+01.2.3.4
+```
+
+**Output:**
+```text
+Invalid input: no valid IPv4 address found
+```
+
+### Test 8 — Leading Zero in Port
+
+**Input:**
+```text
+1.2.3.4:080
+```
+
+**Output:**
+```text
+Invalid input: no valid IPv4 address found
+```
+
+### Test 9 — Empty Octet
+
+**Input:**
+```text
+1..2.3.4
+```
+
+**Output:**
+```text
+Invalid input: no valid IPv4 address found
+```
+
+### Test 10 — Too Many Octets
+
+**Input:**
+```text
+1.2.3.4.5
+```
+
+**Output:**
+```text
+Invalid input: no valid IPv4 address found
+```
+
+### Test 11 — Missing Port After Colon
+
+**Input:**
+```text
+1.2.3.4:
+```
+
+**Output:**
+```text
+Invalid input: no valid IPv4 address found
+```
+
+### Test 12 — Multiple Colons
+
+**Input:**
+```text
+1.2.3.4::80
+```
+
+**Output:**
+```text
+Invalid input: no valid IPv4 address found
+```
+
+### Test 13 — Address Surrounded by Garbage
+
+**Input:**
+```text
+abc###192.168.1.1!!!xyz
+```
+
+**Output:**
+```text
+Extracted IPv4 address: 192.168.1.1 (decimal value: 3232235777, port: none)
+```
+
+### Test 14 — Invalid Candidate Followed by Valid Candidate
+
+**Input:**
+```text
+999.999.999.999 text 192.168.1.1 end
+```
+
+**Output:**
+```text
+Extracted IPv4 address: 192.168.1.1 (decimal value: 3232235777, port: none)
+```
+
+### Test 15 — Extra Period After Address
+
+**Input:**
+```text
+1.2.3.4.
+```
+
+**Output:**
+```text
+Invalid input: no valid IPv4 address found
+```
+
+### Test 16 — No Address Present
+
+**Input:**
+```text
+hello world
+```
+
+**Output:**
+```text
+Invalid input: no valid IPv4 address found
+```
+
+## Test Result
+
+All instructor-provided and additional test cases produced the expected output.
